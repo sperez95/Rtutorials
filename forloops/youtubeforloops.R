@@ -99,7 +99,17 @@ for (i in 1:length(data_files)) {
 }
 results
 
-#using apply function for large loops
+##using apply function instead of large loops
+#another option for what we did above
+#sometimes apply function works faster than for loops
 
-get_counts <- function(data)
-  #paused at 30:15
+get_counts <- function(data_file_name) {
+  file <- read.csv(data_file_name)
+  count <- nrow(file)
+  return(count)
+}
+
+#want a dataframe, not a list, so use unlist
+#returns a vector because the function calls for a vector in return
+results <- unlist(lapply(data_files, FUN = get_counts))
+results
