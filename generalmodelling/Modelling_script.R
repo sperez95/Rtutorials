@@ -131,12 +131,58 @@ summary(shag.m)
     theme.clean() +
     labs(x= " ", y= "European shag abundance"))
 
-#paused at a model with binomial distribution!!
-
+##A model with binomial distribution!!
 # Using a dataset on weevil damage to Scott's pine
+#use binomial because of the binary nature of the response variable
 # Import the Weevil_damage.csv file from the project's directory
 
+Weevil_damage <- read.csv("Weevil_damage.csv")
+head(Weevil_damage)
+str(Weevil_damage)
 
-# Poisson distribution
+#make block a factor
+Weevil_damage$block <- as.factor(Weevil_damage$block)
 
-# Binomial distribution
+#run the model
+weevil.m <- glm(damage_T_F ~ block, family = binomial, data= Weevil_damage)
+summary(weevil.m)
+# It looks like the probability of a pine tree enduring damage from weevils 
+#does vary significantly based on the block in which the tree was located.
+#you won't get R squared values because it is not a linear relationship
+#but you can look at the null and residual deviance (variability explained by the null model)
+
+##challenge
+
+ToothGrowth <- datasets::ToothGrowth
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+head(ToothGrowth)
+str(ToothGrowth)
+
+#1 are higher doses of vitamin C beneficial for tooth growth?
+#filter out only VC in the supp column
+ToothGrowthVC <- filter(ToothGrowth, supp == "VC")
+head(ToothGrowthVC)
+vitc <- lm(len ~ dose, data = ToothGrowthVC)
+summary(vitc)
+#from the model, there seems to be an increase in tooth growth with higher doses of vit C
+#my own way of modelling the data, but the tutorial uses a dif method
+
+#plot relationship
+(plotvit <- ggplot(ToothGrowthVC, aes(x= dose, y= len)) +
+           geom_point() +
+           labs(x= "Dose of Vitamin C", y= "Tooth Length") +
+           stat_smooth(method = "lm"))
+
+#2 Does the method of administration (OJ, VC), influence the effect of the dose?
+#3 What would be the predicted tooth length of a guinea pig given 1 mg of 
+#ascorbic acid? 13.23 for dose 0.5, OJ (see intercept in summary)
+#use ANOVA
+
+tooth.m <- lm(len ~ dose*supp, data= ToothGrowth)
+summary(tooth.m)
+
+#plot using boxplot
+(boxplot <- ggplot(ToothGrowth, aes(x= dose, y= len)) +
+    geom_boxplot(aes(color= supp)))
+
+  
