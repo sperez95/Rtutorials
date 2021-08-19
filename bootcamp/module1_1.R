@@ -69,16 +69,21 @@ summary(model1)    # examine the results
 #########
 # visualize the results!
 
+#made predictor values of girth based on the model and keeping volume the same
 xvals <- seq(5,30,0.5)
 pred <- predict(model1,newdata=data.frame(Girth=xvals),interval = "confidence",level = 0.99)
 
 plot(trees$Volume~trees$Girth,xlab="Girth (inches)",ylab="Volume (cubic feet)",main="Black Cherry",
      xlim=range(xvals),ylim=c(0,100))
 
+#adds a green regression line
 abline(model1,lwd=2,col="green")
+#adds lines that are the upper and lower confidence intervals
 lines(xvals,pred[,"upr"],col="green",lty=2)
 lines(xvals,pred[,"lwr"],col="green",lty=2)
+#adds text that shows the model equation, referring to the coefficients matrix made from the summary of the model
 text(10,80,sprintf("Volume = %s + %s*Girth",round(coefficients(model1)[1],1),round(coefficients(model1)[2],1)))
+#adds text that shows the p-value for Girth, but rounds so the value is 0
 text(10,65,sprintf("p = %s",round(summary(model1)$coefficients[,"Pr(>|t|)"][2],3)))
 
 
@@ -95,15 +100,16 @@ scalar2 <- 104
 scalar3 <- 5 + 6.5    # evaluates to the single value 11.5
 scalar4 <- '4'
 
-
+#tells you what type an object is
 typeof(scalar4)    # returns: character
 
 ## what is this type?
 scalar5 <- TRUE
-typeof(scalar5)    # returns: logical
+typeof(scalar5)    # returns: logical, which means T/F
 
 
 ## what happens when we run this line of code? Think about the types.
+#get an error bc you are adding a numeric to a character
 scalar2 + scalar4
 
 
@@ -122,6 +128,7 @@ a <- 1
 b <- 2
 c <- 3
 
+#makes a vector of numbers that were assigned to each letter
 d.vec <- c(a, b, c)
 d.vec
 
@@ -133,6 +140,7 @@ d1 <- d.vec           # copy the vector "d.vec"
 d2 <- d.vec+3         # add 3 to all elements of the vector "d.vec"
 d3 <- d1+d2           # elementwise addition
 d4 <- d1+c(1,2)       # what does this do?
+#warning message that the lengths are not equal, so adds the c(1,2) in repeat once the object ends
 
 ## inspect the objects by calling them in the console (or script window)
 d1    # returns: 1 2 3
@@ -144,7 +152,7 @@ d4    # returns: 2 4 4
 #############
 ### MATRICES
 #############
-
+#skipped#
 d.mat <- cbind(d1,d2)        # create a matrix by binding vectors, with vector d1 as column 1 and d2 as column 2
 d.mat
 class(d.mat)   # confirm that the new object "d.mat" is a matrix!
@@ -168,6 +176,7 @@ d.mat[1,2]
 ############
 ### ARRAYS!
 ############
+#skipped#
 
 d.array=array(0,dim=c(3,2,4))       # create 3 by 2 by 4 array full of zeros
 d.array				# see what it looks like
@@ -189,7 +198,9 @@ d.list <- list()        # create empty list
 d.list[[1]] <- c(1,2,3)     # note the double brackets- this is one way to reference a specified list element. 
 d.list[[2]] <- c(4,5)
 d.list[[3]] <- "Alfred Pennyworth"
+#creates a list that is separated by 1, 2, 3 based on the assignments given previously
 d.list
+#calls for the value that is from list 1, and the second value within that
 d.list[[1]][2]
 
 typeof(d.list[[3]])
@@ -198,19 +209,21 @@ typeof(d.list[[3]])
 #############
 d.df <- data.frame(d1=c(1,2,3),d2=c(4,5,6))        # create a ‘data frame’ with two columns. Each column is a vector of length 3
 d.df
-
+#d1 and d2 are the columns, and are used as the column names
 
 d.df=data.frame(d.mat)        # create data frame another way - directly from a matrix
 d.df
+#when coming from a matrix, column names are usually X1, X2, etc.
 d.df[1,1]
 d.mat[1,1]
+#created a new column with specific characters
 d.df[["newcol"]] <- c("a", "b", "c")
 
 names(d.df)          # view or change column names
 names(d.df)=c("meas_1","meas_2", "meas_3")        # provide new names for columns
 d.df
 
-
+#give new row names
 rownames(d.df) <- c("obs1","obs2","obs3")
 d.df
 
@@ -219,7 +232,7 @@ d.df
 ### functions
 #############
 
-sum(1, 2, 3, 10)    # returns: 15
+sum(1, 2, 3, 10)    # returns: 16
 
 ## sum can be used with one of the vectors we created
 sum(vector1)        # returns: 10.3
@@ -272,7 +285,7 @@ rbinom(5,1:5,seq(.1,.9,length=5))   # simulations from diff number of trials and
 
 runif(10)                # 10 standard uniform random variates
 runif(10,min=-1,max=1)        # 10 uniform random variates on [-1,1]
-rpois(10, lambda=0.9)
+rpois(10, lambda=0.9)     #10 random variates from poisson
 
 sample(1:10,size=5,replace=TRUE)        # 5 rvs from discrete unif. on 1:10.
 sample(1:10,size=5,replace=TRUE,prob=(1:10)/sum(1:10)) # 5 rvs from discrete pmf w/ varying probs.
@@ -303,11 +316,14 @@ summary(my.data)    # Use the "summary()" function to summarize each column in t
 d.vec <- 2:10
 d.vec
 d.vec[3]
+#subsets the 1st and 5th values in d.vec
 d.vec[c(1,5)]
+#removes the 3rd value from d.vec
 d.vec[-3]
 
 
 d.vec <- 1:4
+#adds column names to each value in d.vec
 names(d.vec) <- c("fred","sally","mimi","terrence")
 d.vec
 d.vec["terrence"]
@@ -316,6 +332,7 @@ my.data
 names(my.data)
 my.data[["Block"]]
 
+##IMPORTANT for subsetting
 # X[a,b]       access row a, column b element of matrix/data frame X
 # X[,b]        access column b of matrix/data frame X
 # X[a,]        access row a of matrix/data frame X
@@ -435,6 +452,7 @@ b <- c(2,5)
 c <- c(3,6)
 rbind(a,b,c)
 ##2
+#takes away the first and second rows
 d.mat[-c(1,2),]
 d.mat
 ##vector!! bc it took away some columns
@@ -450,7 +468,9 @@ d.vec3 <-c(1:3)
 d.mat3 <- matrix(d.vec3, nrow = 3)
 dim(d.mat3)
 dim(d.vec3)
+#this just made a list so there are no dimensions
 ##5
+#converted a df from a matrix to a vector, adding values from the first column, then on to the next column
 as.vector(d.mat2)
 ##6
 d.list <- list()
