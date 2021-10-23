@@ -56,12 +56,14 @@
         require(migrateR)		  # Load Package
         
         # Example data
+        # ltraj dataset of 4 individuals
         data(bighorn) 
   
         # Fit 5 non-linear models of animal movement
         bhs.nsd <- mvmtClass(bighorn[3])  # the workhorse
         
         # Take a look at the results
+        ##ERROR for plot, maybe bc parameters weren't set?
         plot(bhs.nsd[[1]])
     
     #  B. Formatting data
@@ -71,15 +73,16 @@
         # bighorn sheep, Sierra Nevada Mountains, USA
         # created ltraj from adehabitat package
         bighorn
+        #call data from individual 3 in dataset
         head(bighorn[[3]])
         plot(bighorn[3])
         # or try: trajdyn(bighorn[3])
 
-        # elk, Canadian Rockies
+        # elk, Canadian Rockies, 23 individuals
         data(elk)       
         elk
         head(elk[[1]])
-      #  ii. Resources & Recomendations
+      #  ii. Resources & Recommendations
         
         # Setup instructions and spatial tools (really thorough!):
         #	vignette("adehabitatLT") 
@@ -110,13 +113,16 @@
   #  I.	Analysis	--------------
 
     #      A. Fitting Models
-		   
+		   #runs models for disperser, migrant, etc for each individual and calculates
+        #NSD for each location, delta describes distance between ranges
+        #use mvmtClass in help tab to get descriptions of what the values mean
        elk.nsd1 <- mvmtClass(elk)   # yep, that's it.
        elk.nsd1
 
     #      B. Visual Checks
 
 		   # Ye ol' 'plot' function
+       ##ERROR
 		   plot(elk.nsd1)				# Will cycle through all elements [esc!]	
 		   
 		   plot(elk.nsd1[[9]])  # What we want to see! -- as good as it gets

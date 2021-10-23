@@ -37,8 +37,16 @@ library(migrateR)
   data(elk)
   
   ## B. DEFINE STARTING PARAMETER VALUES
+  #this is the start date, to ensure that estimates of migratory timing are
+  #comparable. This example has March 1 as the start date
     stdt <- "3-1"
 
+  #this is defining the starting delta value, or distance separating seasonal ranges
+  #This function can be used to manually specify starting values or restrict 
+  #the range of terms included in movement models. Running pEst() returns 
+  #a ‘data.frame’ containing default values. The missing values in this 
+  #‘data.frame’ are filled dynamically by mvmtClass. By default, pEst specifies 
+  #that migration can’t occur before the first location observed
     pest.n <- pEst()
     pest.n2 <- pEst(s.d = 90)
     pest.n3 <- pEst(s.d=100)
@@ -53,18 +61,43 @@ library(migrateR)
 
     ##  A. NSD MODELS
     nsd <- mvmtClass(elk, p.est = pest.n, stdt = stdt)
+	    #shows sum of bursts that are missing models, need to see if changing parameter 
+	    #estimates will improve this
       sum(!fullmvmt(nsd)) # bursts missing 1 or more models
-      # plot(nsd)
+      
+      #plots individual separately, press any key to go through all of them
+      #(for some reason, cant use plot() bc you get an error)
+      plot.mvmts(nsd)
+      
+      #plots first individual
+      plot.mvmt(nsd[[1]])
     
+      #Most problems with model fitting are a result of poor correspondence 
+      #between bursts and parameter constraints or starting values. For 
+      #datasets containing variable behavior, like elk and bighorn, a single 
+      #set of parameter estimates may be insufficient for fitting all models 
+      #and multiple sets may be required. A related but distinct problem is 
+      #that poorly chosen starting values or constraints don’t always cause 
+      #convergence failure, but can instead force mvmtClass to fit suboptimal 
+      #models. The refine function provides an answers to both of these 
+      #challenges. This function requires two arguments, output from 
+      #mvmtClass and a new set of starting parameter values and constraints 
+      #(supplied by pEst), attempts to refit each model using the new 
+      #constraints, and compares these models to the original results, 
+      #keeping only the single model of each type with the lowest AIC.
     nsd2 <- refine(nsd, pest.n2)
+    
+    #lists which bursts are missing models
       which(!fullmvmt(nsd2)) # bursts missing 1 or more models
     
     nsd3 <- refine(nsd2,pest.n3) 
-      sum(!fullmvmt(nsd3)) # bursts missing 1 or more models
+      sum(!fullmvmt(nsd3)) # no bursts are missing models!
 
-    #  plot(nsd3)
+    plot.mvmts(nsd3)
 
-
+##stopped here!!!
+    
+    
     ## B. rNSD MODELS	
     rlocs <- findrloc(elk,stdt=stdt,p.est=pest.n)  # calculate reference dates
     rlocs2 <- findrloc(elk,stdt=stdt,p.est=pest.n2)  # calculate reference dates
